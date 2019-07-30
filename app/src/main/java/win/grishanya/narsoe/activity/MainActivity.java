@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         != PackageManager.PERMISSION_GRANTED) {
             listOfNecessaryPermission.add(Manifest.permission.READ_CALL_LOG);
         }
-
+        //ToDo Проверить если необходимость в пермишене!
         if (checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE)
                 != PackageManager.PERMISSION_GRANTED) {
             listOfNecessaryPermission.add(Manifest.permission.READ_PHONE_STATE);
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         checkDrawOverlayPermission();
 
     }
-
+    //necessary to check READ_CALL_LOG READ_PHONE_STATE
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
+    //necessary to check ACTION_MANAGE_OVERLAY_PERMISSION
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

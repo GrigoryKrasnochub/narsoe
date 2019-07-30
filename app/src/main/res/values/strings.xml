@@ -16,4 +16,5 @@
     <string name="call_info_info_example">Name SomeName \nRating SomeNumber \nType SomeType</string>
     <string name="setting_modal_window_position">Modal window position</string>
     <string name="recentCallsActivityNumberCopied">Number copied</string>
+    <string name="recentCallsActivitySearchQuery">Search query</string>
 </resources>

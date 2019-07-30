@@ -1,0 +1,82 @@
+language: android
+dist: trusty
+jdk: oraclejdk8
+
+env:
+  global:
+    - ANDROID_API=23
+    - ANDROID_BUILD_TOOLS=23.0.3
+    - OWNER=${TRAVIS_REPO_SLUG%/*}
+    - DEV=${OWNER/GrigoryKrasnochub/dev}
+    - BRANCH=${TRAVIS_BRANCH/master/}
+    - TAG=${DEV}${BRANCH:+_}${BRANCH}
+
+before_install:
+  - chmod +x gradlew
+
+android:
+  components:
+    - platform-tools
+    - tools
+    - build-tools-$ANDROID_BUILD_TOOLS
+    - android-$ANDROID_API
+    - extra
+  licenses:
+    - android-sdk-license-.+
+
+branches:
+  except:
+    - /^travis-.*-build$/
+
+before_script:
+  - yes | sdkmanager "tools" > /dev/null
+  - yes | sdkmanager "platform-tools" > /dev/null
+  - yes | sdkmanager "build-tools;$ANDROID_BUILD_TOOLS" > /dev/null
+  - yes | sdkmanager "platforms;android-$ANDROID_API" > /dev/null
+#  - yes | sdkmanager --licenses
+
+script: ./gradlew assembleDebug
+
+before_deploy:
+  - ln -s app/build/outputs/apk/debug/app-debug.apk narsoe-${TAG}-build.apk
+  - git tag -f travis-${TAG}-build
+  - git remote add gh_origin https://${GITHUB_API_KEY}@github.com/${TRAVIS_REPO_SLUG}.git
+  - git push gh_origin :travis-${TAG}-build || true
+  - git push -f gh_origin travis-${TAG}-build
+  - git remote remove gh_origin
+
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_API_KEY
+  file: narsoe-${TAG}-build.apk
+  skip_cleanup: true
+  name: narsoe ${TAG} build (${TRAVIS_BRANCH})
+  body: Automatic narsoe development build of $TRAVIS_BRANCH branch
+    (commit $TRAVIS_COMMIT) built by Travis CI on $(date +'%F %T %Z').
+  #draft: true
+  overwrite: true #
+  prerelease: true #
+  target_commitish: $TRAVIS_COMMIT #
+  on:
+    #tags: true
+    tags: false #
+    all_branches: true #
+
+before_cache:
+  # Do not cache a few Gradle files/directories (see https://docs.travis-ci.com/user/languages/java/#Caching)
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    # Android SDK
+    - $HOME/android-sdk-dl
+    - $HOME/android-sdk
+
+    # Gradle dependencies
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+    # Android build cache (see http://tools.android.com/tech-docs/build-cache)
+#    - $HOME/.android/build-cache

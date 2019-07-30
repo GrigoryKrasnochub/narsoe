@@ -17,7 +17,10 @@ import static android.provider.CallLog.Calls.OUTGOING_TYPE;
 import static android.provider.CallLog.Calls.REJECTED_TYPE;
 
 public class RecentCallsRecycleViewAdapter  extends RecyclerView.Adapter<RecentCallsRecycleViewAdapter.recentCallsRecycleViewHolder> {
-    private ArrayList<Calls> listOfRecentCalls;
+    private ArrayList<Calls> listOfRecentCalls = new ArrayList<>();
+    private ArrayList<Calls> listOfRecentCallsFull = new ArrayList<>();
+    private String previousStringQuery = "";
+    private ArrayList<Calls> listOfSearchedRecentCalls = new ArrayList<>();
     private ItemClickListener itemClickListener;
 
     //Здесь описывается вьюха
@@ -56,7 +59,8 @@ public class RecentCallsRecycleViewAdapter  extends RecyclerView.Adapter<RecentC
 
     //Конструктор
     public RecentCallsRecycleViewAdapter(ArrayList<Calls> listOfRecentCalls,ItemClickListener itemClickListener){
-        this.listOfRecentCalls = listOfRecentCalls;
+        this.listOfRecentCalls.addAll(listOfRecentCalls);
+        listOfRecentCallsFull.addAll(listOfRecentCalls);
         this.itemClickListener = itemClickListener;
     }
 
@@ -110,8 +114,46 @@ public class RecentCallsRecycleViewAdapter  extends RecyclerView.Adapter<RecentC
 
     public void updateListOfRecentCalls(ArrayList<Calls> calls){
         listOfRecentCalls.clear();
-        listOfRecentCalls = calls;
+        listOfRecentCalls.addAll(calls);
+        listOfRecentCallsFull.clear();
+        listOfRecentCallsFull.addAll(calls);
         notifyDataSetChanged();
+    }
+
+    private void updateListOfRecentCallsWithoutChangesInFull(ArrayList<Calls> calls){
+        this.listOfRecentCalls.clear();
+        this.listOfRecentCalls.addAll(calls);
+        notifyDataSetChanged();
+    }
+
+    public void showSearchInTheList(String searchQuery){
+       if(!searchQuery.equals(previousStringQuery)){
+       //Если отличие на один символ, то можно перебирать по тому что внутри. Сейчас криво и медленно
+           listOfSearchedRecentCalls.clear();
+       }
+        if (searchQuery.length() != 0) {
+
+            for (Calls call : listOfRecentCallsFull) {
+                if (searchQuery.matches("\\s*\\+?(\\d{1,11})?\\s*")) {
+                    if (call.number.contains(searchQuery)) {
+                        listOfSearchedRecentCalls.add(call);
+                    }
+                } else {
+                    if (call.name.contains(searchQuery)) {
+                        listOfSearchedRecentCalls.add(call);
+                    }
+                }
+            }
+
+            if (!listOfRecentCalls.equals(listOfSearchedRecentCalls)) {
+                updateListOfRecentCallsWithoutChangesInFull(listOfSearchedRecentCalls);
+            }
+        }else{
+            //If list has been changed
+            if (!listOfRecentCalls.equals(listOfRecentCallsFull)) {
+                updateListOfRecentCallsWithoutChangesInFull(listOfRecentCallsFull);
+            }
+        }
     }
 
     private Calls getCall (int position){

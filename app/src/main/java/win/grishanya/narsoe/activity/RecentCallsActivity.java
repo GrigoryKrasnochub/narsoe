@@ -1,10 +1,8 @@
 package win.grishanya.narsoe.activity;
 
-import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -16,22 +14,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 import win.grishanya.narsoe.Calls;
-import win.grishanya.narsoe.NetworkRequests;
 import win.grishanya.narsoe.R;
 import win.grishanya.narsoe.RecentCallsRecycleViewAdapter;
 import win.grishanya.narsoe.network.PhoneNumberHandler;
 
 public class RecentCallsActivity extends AppCompatActivity {
     private BottomNavigationView navigation;
+    private EditText stringQueryEditText;
     private ArrayList<Calls> recentCallsList;
     private RecentCallsRecycleViewAdapter recentCallsRecycleViewAdapter;
     private String [] listOfRecentCallsTables = new String []{
@@ -85,6 +88,7 @@ public class RecentCallsActivity extends AppCompatActivity {
 
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         recentCalls = (RecyclerView) findViewById(R.id.recentCallsRecyclerView);
+        stringQueryEditText = (EditText) findViewById(R.id.recentCallsSearchQuery);
 
         navigation.setSelectedItemId(R.id.navigation_dashboard);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -116,6 +120,31 @@ public class RecentCallsActivity extends AppCompatActivity {
             }
         });
         recentCalls.setAdapter(recentCallsRecycleViewAdapter);
+
+        stringQueryEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                return false;
+            }
+        });
+
+        stringQueryEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.d("TextChanged","TextChanged");
+                recentCallsRecycleViewAdapter.showSearchInTheList(stringQueryEditText.getText().toString());
+            }
+        });
     }
 
     //Метод отдает список всех звонков
