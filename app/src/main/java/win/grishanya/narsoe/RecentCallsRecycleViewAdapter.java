@@ -112,9 +112,13 @@ public class RecentCallsRecycleViewAdapter  extends RecyclerView.Adapter<RecentC
         return listOfRecentCalls.size();
     }
 
-    public void updateListOfRecentCalls(ArrayList<Calls> calls){
-        listOfRecentCalls.clear();
-        listOfRecentCalls.addAll(calls);
+    public void updateListOfRecentCalls(ArrayList<Calls> calls,boolean searchIsActive){
+        if(searchIsActive){
+            showSearchInTheList(previousStringQuery);
+        }else{
+            listOfRecentCalls.clear();
+            listOfRecentCalls.addAll(calls);
+        }
         listOfRecentCallsFull.clear();
         listOfRecentCallsFull.addAll(calls);
         notifyDataSetChanged();
@@ -130,6 +134,7 @@ public class RecentCallsRecycleViewAdapter  extends RecyclerView.Adapter<RecentC
        if(!searchQuery.equals(previousStringQuery)){
        //Если отличие на один символ, то можно перебирать по тому что внутри. Сейчас криво и медленно
            listOfSearchedRecentCalls.clear();
+           previousStringQuery = searchQuery;
        }
         if (searchQuery.length() != 0) {
 
@@ -139,7 +144,7 @@ public class RecentCallsRecycleViewAdapter  extends RecyclerView.Adapter<RecentC
                         listOfSearchedRecentCalls.add(call);
                     }
                 } else {
-                    if (call.name.contains(searchQuery)) {
+                    if (call.name.toLowerCase().contains(searchQuery.toLowerCase())) {
                         listOfSearchedRecentCalls.add(call);
                     }
                 }

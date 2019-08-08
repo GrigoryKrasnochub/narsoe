@@ -152,6 +152,11 @@ public class MainActivity extends AppCompatActivity {
             listOfNecessaryPermission.add(Manifest.permission.READ_PHONE_STATE);
         }
 
+        if (checkSelfPermission(android.Manifest.permission.CALL_PHONE)
+                != PackageManager.PERMISSION_GRANTED) {
+            listOfNecessaryPermission.add(Manifest.permission.CALL_PHONE);
+        }
+
         if(!listOfNecessaryPermission.isEmpty()){
             String [] arrayOfNecessaryPermission = new String[listOfNecessaryPermission.size()];
             listOfNecessaryPermission.toArray(arrayOfNecessaryPermission);

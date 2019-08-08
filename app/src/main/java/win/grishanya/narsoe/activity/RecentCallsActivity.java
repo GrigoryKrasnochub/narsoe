@@ -77,7 +77,7 @@ public class RecentCallsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        recentCallsRecycleViewAdapter.updateListOfRecentCalls(getListOfRecentCalls());
+        recentCallsRecycleViewAdapter.updateListOfRecentCalls(getListOfRecentCalls(),!stringQueryEditText.getText().toString().equals(""));
     }
 
 

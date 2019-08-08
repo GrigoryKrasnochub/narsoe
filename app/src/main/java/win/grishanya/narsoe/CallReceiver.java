@@ -37,7 +37,7 @@ public class CallReceiver extends BroadcastReceiver {
     private static ViewGroup windowLayout;
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
             String action = intent.getAction();
          myPreferences
                 = PreferenceManager.getDefaultSharedPreferences(context);
@@ -52,9 +52,28 @@ public class CallReceiver extends BroadcastReceiver {
                         incomingCall = true;
 
                         PhoneNumberHandler phoneNumberHandler = new PhoneNumberHandler();
-                        phoneNumber = phoneNumberHandler.prettifyPhoneNumber(phoneNumber);
+                        final String preatyPhoneNumber = phoneNumberHandler.prettifyPhoneNumber(phoneNumber);
 
-                        showWindow(context, phoneNumber);
+                        if(myPreferences.getBoolean("blockSpamCalls",false)) {
+                            NetworkRequests.MakeResponse(phoneNumber, new NetworkRequests.MakeResponseCallbacks() {
+                                @Override
+                                public void onGetResponse(Response<InfoListShort> response) {
+                                    if (Integer.parseInt(response.body().getRating()) > myPreferences.getInt("ratingBottomBorder",-20)) {
+                                        showWindow(context, preatyPhoneNumber);
+                                    } else {
+                                        CallBlock callBlock = new CallBlock();
+                                        callBlock.disconnectIncomingCall(context);
+                                    }
+                                }
+
+                                @Override
+                                public void onGetFailed(Throwable error) {
+
+                                }
+                            });
+                        }else{
+                            showWindow(context, preatyPhoneNumber);
+                        }
 
                     } else if (phoneState.equals(TelephonyManager.EXTRA_STATE_OFFHOOK) && myPreferences.getBoolean("closeModalWindowWhenCallApply",true)) {
                         //Телефон находится в режиме звонка (набор номера при исходящем звонке / разговор)
@@ -79,7 +98,7 @@ public class CallReceiver extends BroadcastReceiver {
         }
 
     public void showWindow(final Context context, String phone) {
-        int modalWindowPosition = myPreferences.getInt("modalWindowPosition", 0);
+        int modalWindowPosition = myPreferences.getInt("modalWindowPosition", 15);
 
 
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);

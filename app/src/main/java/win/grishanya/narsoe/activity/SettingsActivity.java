@@ -8,12 +8,15 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Switch;
 
@@ -23,7 +26,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     private Switch defineIncomingCalls;
     private Switch closeModalWindowWhenCallApply;
+    private Switch blockSpamCalls;
     private SeekBar modalWindowPosition;
+    private EditText inputRatingBottomBorder;
     private SharedPreferences myPreferences;
     private ViewGroup windowLayout = null;
     private WindowManager windowManager = null;
@@ -36,7 +41,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         defineIncomingCalls = (Switch) findViewById(R.id.switchDefineIncomingCalls);
         closeModalWindowWhenCallApply = (Switch) findViewById(R.id.settingsCloseModalWindowWhenCallApplySwitch);
+        blockSpamCalls = (Switch) findViewById(R.id.settingsActivityBlockSpamCallsSwitch);
         modalWindowPosition = (SeekBar) findViewById(R.id.seekBarModalWindowVerticalPosition);
+        inputRatingBottomBorder = (EditText) findViewById(R.id.settingsActivityInputRatingBottomBorder);
 
 
 
@@ -45,7 +52,8 @@ public class SettingsActivity extends AppCompatActivity {
                 = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
         final SharedPreferences.Editor myEditor = myPreferences.edit();
 
-        showSaveSettings();
+            showSaveSettings();
+
 
         defineIncomingCalls.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -59,6 +67,32 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 myEditor.putBoolean("closeModalWindowWhenCallApply",isChecked);
+                myEditor.apply();
+            }
+        });
+
+        blockSpamCalls.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                myEditor.putBoolean("blockSpamCalls",isChecked);
+                myEditor.apply();
+            }
+        });
+
+        inputRatingBottomBorder.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                myEditor.putInt("ratingBottomBorder",Integer.parseInt(s.toString()));
                 myEditor.apply();
             }
         });
@@ -99,7 +133,9 @@ public class SettingsActivity extends AppCompatActivity {
     private void showSaveSettings (){
         defineIncomingCalls.setChecked(myPreferences.getBoolean("defineIncomingCalls",true));
         closeModalWindowWhenCallApply.setChecked(myPreferences.getBoolean("closeModalWindowWhenCallApply",true));
-        modalWindowPosition.setProgress((myPreferences.getInt("modalWindowPosition",0)*100)/getUserScreenHeight());
+        blockSpamCalls.setChecked(myPreferences.getBoolean("blockSpamCalls",false));
+        inputRatingBottomBorder.setText(""+myPreferences.getInt("ratingBottomBorder",-20));
+        modalWindowPosition.setProgress((myPreferences.getInt("modalWindowPosition",15)*100)/getUserScreenHeight());
     }
 
     private void showModalWindowPosition(int position) {
