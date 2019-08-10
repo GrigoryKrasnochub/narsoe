@@ -22,7 +22,7 @@ public class ResponseDataHandler {
                 }
 
                 result = addStringIfNotEmpty(result,response.body().getName(),"Name ",true);
-                result = addStringIfNotEmpty(result,response.body().getRating(),"Rating ",true);
+                result = addStringIfNotEmpty(result,String.valueOf(response.body().getRating()),"Rating ",true);
                 result = addStringIfNotEmpty(result,response.body().getType(),"Type ",true);
 
                 if(!response.body().getComments().isEmpty()){
@@ -56,7 +56,7 @@ public class ResponseDataHandler {
                 }
 
                 result = addStringIfNotEmpty(result,response.body().getName(),"Name ",true);
-                result = addStringIfNotEmpty(result,response.body().getRating(),"Rating ",true);
+                result = addStringIfNotEmpty(result,String.valueOf(response.body().getRating()),"Rating ",true);
                 result = addStringIfNotEmpty(result,response.body().getType(),"Type ",true);
                 result = addStringIfNotEmpty(result,response.body().getRegion(),"Region ",true);
                 result += "\n";

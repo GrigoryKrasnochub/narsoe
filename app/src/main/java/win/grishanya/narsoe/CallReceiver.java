@@ -58,7 +58,7 @@ public class CallReceiver extends BroadcastReceiver {
                             NetworkRequests.MakeResponse(phoneNumber, new NetworkRequests.MakeResponseCallbacks() {
                                 @Override
                                 public void onGetResponse(Response<InfoListShort> response) {
-                                    if (Integer.parseInt(response.body().getRating()) > myPreferences.getInt("ratingBottomBorder",-20)) {
+                                    if (response.body().getRating() > myPreferences.getInt("ratingBottomBorder",-20)) {
                                         showWindow(context, preatyPhoneNumber);
                                     } else {
                                         CallBlock callBlock = new CallBlock();

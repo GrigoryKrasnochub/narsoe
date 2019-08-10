@@ -41,7 +41,7 @@ public class NumberInfoActivity extends AppCompatActivity {
         ShowNumberInfo(phoneNumber);
     }
 
-    protected void ShowNumberInfo(String phoneNumber){
+    protected void ShowNumberInfo(final String phoneNumber){
         ResponseDataHandler responseDataHandler = new ResponseDataHandler();
         responseDataHandler.getFullNumberInfo(phoneNumber, new ResponseDataHandler.NumberInfoCallbacks() {
             @Override
@@ -54,6 +54,8 @@ public class NumberInfoActivity extends AppCompatActivity {
             @Override
             public void onGetNumberInfoFailed(Throwable error) {
                 informationTextView.setText(R.string.bad_request);
+                informationTextView.setVisibility(View.VISIBLE);
+                ShowNumberInfo(phoneNumber);
             }
         });
     }

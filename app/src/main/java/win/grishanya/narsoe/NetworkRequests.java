@@ -26,8 +26,12 @@ public class NetworkRequests {
         call.enqueue(new Callback<InfoListShort>() {
             @Override
             public void onResponse(Call<InfoListShort> call, Response<InfoListShort> response) {
-                Log.i("Request","GoodRequest"+response.code());
-                makeResponseCallbacks.onGetResponse(response);
+                if (response.code()==200){
+                    makeResponseCallbacks.onGetResponse(response);
+                }else{
+                    Throwable t = new Throwable();
+                    makeResponseCallbacks.onGetFailed(t);
+                }
             }
 
             @Override
