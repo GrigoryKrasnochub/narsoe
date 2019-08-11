@@ -1,4 +1,4 @@
-package win.grishanya.narsoe;
+package win.grishanya.narsoe.dataClasses;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -10,6 +10,9 @@ public class InfoListShort {
     @SerializedName("Rating")
     @Expose
     private int rating;
+    @SerializedName("Avito")
+    @Expose
+    private InfoListShort_Avito avito;
     @SerializedName("Name")
     @Expose
     private String name;
@@ -72,5 +75,13 @@ public class InfoListShort {
 
     public void setCompany(InfoListShort_Company company) {
         this.company = company;
+    }
+
+    public InfoListShort_Avito getAvito() {
+        return avito;
+    }
+
+    public void setAvito(InfoListShort_Avito avito) {
+        this.avito = avito;
     }
 }

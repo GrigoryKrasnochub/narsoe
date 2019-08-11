@@ -11,7 +11,13 @@ import com.android.internal.telephony.ITelephony;
 import java.lang.reflect.Method;
 
 public class CallBlock {
-    public void disconnectIncomingCall(Context context) {
+
+    public interface  DisconnectIncomingCallCallBack{
+        void onNumberBlocked ();
+        void onFailedNumberBlock ();
+    }
+
+    public void disconnectIncomingCall(Context context, DisconnectIncomingCallCallBack disconnectIncomingCallCallBack ) {
         ITelephony telephonyService;
         try {
 
@@ -23,9 +29,11 @@ public class CallBlock {
                     telephonyService = (ITelephony) m.invoke(tm);
 
                     telephonyService.endCall();
+                    disconnectIncomingCallCallBack.onNumberBlocked();
 
                 } catch (Exception e) {
                     e.printStackTrace();
+                    disconnectIncomingCallCallBack.onFailedNumberBlock();
                 }
 
 

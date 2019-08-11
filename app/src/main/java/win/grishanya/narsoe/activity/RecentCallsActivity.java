@@ -27,7 +27,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Date;
 
-import win.grishanya.narsoe.Calls;
+import win.grishanya.narsoe.dataClasses.Calls;
 import win.grishanya.narsoe.R;
 import win.grishanya.narsoe.RecentCallsRecycleViewAdapter;
 import win.grishanya.narsoe.network.PhoneNumberHandler;

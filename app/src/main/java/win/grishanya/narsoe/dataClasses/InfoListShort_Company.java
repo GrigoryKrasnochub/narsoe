@@ -1,4 +1,4 @@
-package win.grishanya.narsoe;
+package win.grishanya.narsoe.dataClasses;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

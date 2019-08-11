@@ -1,6 +1,9 @@
 package win.grishanya.narsoe.activity;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -36,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText phoneNumberEditText;
     private BottomNavigationView navigation;
     private static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE= 5469;
+    private static int ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS_REQUEST_CODE= 5470;
     //Navigation view
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -164,8 +168,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         checkDrawOverlayPermission();
+        checkNotificationPolicyAccess();
 
     }
+
     //necessary to check READ_CALL_LOG READ_PHONE_STATE
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -189,6 +195,24 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void checkNotificationPolicyAccess() {
+        /** check if we already  have permission to draw over other apps */
+        //Only for Api 23 or Higher
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            NotificationManager notificationManager =
+                    (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+            if (!notificationManager.isNotificationPolicyAccessGranted()) {
+
+                Intent intent = new Intent(
+                        Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+
+                startActivityForResult(intent,ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS_REQUEST_CODE);
+            }
+        }
+    }
     //necessary to check ACTION_MANAGE_OVERLAY_PERMISSION
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -196,6 +220,13 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode != ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE){
             if (!Settings.canDrawOverlays(this)) {
                 checkDrawOverlayPermission();
+            }
+        }
+        if (requestCode != ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE){
+            NotificationManager notificationManager =
+                    (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            if (!notificationManager.isNotificationPolicyAccessGranted()) {
+                checkNotificationPolicyAccess();
             }
         }
     }

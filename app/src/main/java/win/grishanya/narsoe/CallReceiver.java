@@ -1,10 +1,8 @@
 package win.grishanya.narsoe;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.preference.PreferenceManager;
@@ -17,78 +15,90 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
-import win.grishanya.narsoe.activity.MainActivity;
-import win.grishanya.narsoe.activity.SettingsActivity;
-import win.grishanya.narsoe.network.GetShortInformation;
+import win.grishanya.narsoe.dataClasses.InfoListShort;
+import win.grishanya.narsoe.dataClasses.InfoRating;
 import win.grishanya.narsoe.network.PhoneNumberHandler;
-import win.grishanya.narsoe.network.RetrofitInstance;
 
 public class CallReceiver extends BroadcastReceiver {
     private static Boolean incomingCall = false;
     private static WindowManager windowManager;
-    private static SharedPreferences myPreferences;
+    private static SharedPreferences myPreferences = null;
     private static ViewGroup windowLayout;
 
     @Override
     public void onReceive(final Context context, Intent intent) {
             String action = intent.getAction();
-         myPreferences
-                = PreferenceManager.getDefaultSharedPreferences(context);
+
+            if (myPreferences == null){
+                myPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            }
 
             if (action !=null && myPreferences.getBoolean("defineIncomingCalls",true)) {
                 if (action.equals("android.intent.action.PHONE_STATE")) {
                     String phoneState = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
                     if (phoneState.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-                        Log.i("info", "EXTRA_STATE_RINGING");
                         //Трубка не поднята, телефон звонит
-                        String phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+
+                        final CallSoundControl callSoundControl = new CallSoundControl(context);
+                        callSoundControl.turnOffSound();
+
                         incomingCall = true;
 
+                        String phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+
                         PhoneNumberHandler phoneNumberHandler = new PhoneNumberHandler();
-                        final String preatyPhoneNumber = phoneNumberHandler.prettifyPhoneNumber(phoneNumber);
+                        final String peatyPhoneNumber = phoneNumberHandler.prettifyPhoneNumber(phoneNumber);
 
                         if(myPreferences.getBoolean("blockSpamCalls",false)) {
-                            NetworkRequests.MakeResponse(phoneNumber, new NetworkRequests.MakeResponseCallbacks() {
+                            NetworkRequests.MakeRatingRequest(phoneNumber, new NetworkRequests.MakeRatingRequestCallbacks(){
                                 @Override
-                                public void onGetResponse(Response<InfoListShort> response) {
+                                public void onGetResponse(Response<InfoRating> response) {
                                     if (response.body().getRating() > myPreferences.getInt("ratingBottomBorder",-20)) {
-                                        showWindow(context, preatyPhoneNumber);
+                                        callSoundControl.returnSoundStatus();
+                                        showWindow(context, peatyPhoneNumber);
                                     } else {
                                         CallBlock callBlock = new CallBlock();
-                                        callBlock.disconnectIncomingCall(context);
+                                        callBlock.disconnectIncomingCall(context, new CallBlock.DisconnectIncomingCallCallBack() {
+                                            @Override
+                                            public void onNumberBlocked() {
+                                                callSoundControl.returnSoundStatus();
+                                            }
+
+                                            @Override
+                                            public void onFailedNumberBlock() {
+                                                callSoundControl.returnSoundStatus();
+                                                showWindow(context, peatyPhoneNumber);
+                                            }
+                                        });
                                     }
                                 }
 
                                 @Override
                                 public void onGetFailed(Throwable error) {
-
+                                    callSoundControl.returnSoundStatus();
+                                    showWindow(context, peatyPhoneNumber);
                                 }
                             });
+
                         }else{
-                            showWindow(context, preatyPhoneNumber);
+                            callSoundControl.returnSoundStatus();
+                            showWindow(context, peatyPhoneNumber);
                         }
 
-                    } else if (phoneState.equals(TelephonyManager.EXTRA_STATE_OFFHOOK) && myPreferences.getBoolean("closeModalWindowWhenCallApply",true)) {
+                    } else if (phoneState.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)){
                         //Телефон находится в режиме звонка (набор номера при исходящем звонке / разговор)
-                        Log.i("info", "EXTRA_STATE_OFFHOOK");
-                        if (incomingCall) {
-                            Log.d("info", "Close window.");
-                            incomingCall = false;
-                            closeWindow();
+                        if (myPreferences.getBoolean("closeModalWindowWhenCallApply",true)) {
+                            if (incomingCall) {
+                                incomingCall = false;
+                                closeWindow();
+                            }
                         }
                     } else if (phoneState.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                         //Телефон находится в ждущем режиме - это событие наступает по окончанию разговора
                         //или в ситуации "отказался поднимать трубку и сбросил звонок".
-                        Log.i("info", "EXTRA_STATE_IDLE");
                         if (incomingCall) {
-                            Log.d("info", "Close window.");
                             incomingCall = false;
                             closeWindow();
                         }

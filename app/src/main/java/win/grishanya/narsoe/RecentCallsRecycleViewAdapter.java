@@ -11,6 +11,8 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import win.grishanya.narsoe.dataClasses.Calls;
+
 import static android.provider.CallLog.Calls.INCOMING_TYPE;
 import static android.provider.CallLog.Calls.MISSED_TYPE;
 import static android.provider.CallLog.Calls.OUTGOING_TYPE;

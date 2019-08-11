@@ -1,4 +1,4 @@
-package win.grishanya.narsoe;
+package win.grishanya.narsoe.dataClasses;
 
 import java.util.Date;
 

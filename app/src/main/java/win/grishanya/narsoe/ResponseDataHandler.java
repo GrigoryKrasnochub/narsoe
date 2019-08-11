@@ -3,6 +3,7 @@ package win.grishanya.narsoe;
 import java.util.List;
 
 import retrofit2.Response;
+import win.grishanya.narsoe.dataClasses.InfoListShort;
 
 public class ResponseDataHandler {
 
@@ -12,7 +13,7 @@ public class ResponseDataHandler {
     }
 
     public void getNumberInfo(String number,final NumberInfoCallbacks numberInfoCallbacks) {
-        NetworkRequests.MakeResponseCallbacks makeResponseCallbacks = new NetworkRequests.MakeResponseCallbacks() {
+        NetworkRequests.MakeRequestCallbacks makeRequestCallbacks = new NetworkRequests.MakeRequestCallbacks() {
             @Override
             public void onGetResponse(Response<InfoListShort> response) {
                 String result = "";
@@ -23,6 +24,9 @@ public class ResponseDataHandler {
 
                 result = addStringIfNotEmpty(result,response.body().getName(),"Name ",true);
                 result = addStringIfNotEmpty(result,String.valueOf(response.body().getRating()),"Rating ",true);
+                if(response.body().getAvito() != null) {
+                    result = addStringIfNotEmpty(result,response.body().getAvito().getName(),"Avito name ",true);
+                }
                 result = addStringIfNotEmpty(result,response.body().getType(),"Type ",true);
 
                 if(!response.body().getComments().isEmpty()){
@@ -36,11 +40,11 @@ public class ResponseDataHandler {
                 numberInfoCallbacks.onGetNumberInfoFailed(error);
             }
         };
-       NetworkRequests.MakeResponse(number,makeResponseCallbacks);
+       NetworkRequests.MakeRequest(number, makeRequestCallbacks);
     }
 
     public void getFullNumberInfo (String number,final NumberInfoCallbacks numberInfoCallbacks){
-        NetworkRequests.MakeResponseCallbacks makeResponseCallbacks = new NetworkRequests.MakeResponseCallbacks() {
+        NetworkRequests.MakeRequestCallbacks makeRequestCallbacks = new NetworkRequests.MakeRequestCallbacks() {
             @Override
             public void onGetResponse(Response<InfoListShort> response) {
                 String result = "";
@@ -60,7 +64,10 @@ public class ResponseDataHandler {
                 result = addStringIfNotEmpty(result,response.body().getType(),"Type ",true);
                 result = addStringIfNotEmpty(result,response.body().getRegion(),"Region ",true);
                 result += "\n";
-
+                if(response.body().getAvito() != null) {
+                    result = addStringIfNotEmpty(result,response.body().getAvito().getName(),"Avito name ",true);
+                    result = addStringIfNotEmpty(result,response.body().getAvito().getAddress(),"Avito adress ",true);
+                }
                 if(!response.body().getComments().isEmpty()){
                     result = addStringIfNotEmpty(result,response.body().getComments(),"Comment ",false);
                 }
@@ -73,7 +80,7 @@ public class ResponseDataHandler {
             }
         };
 
-        NetworkRequests.MakeResponse(number,makeResponseCallbacks);
+        NetworkRequests.MakeRequest(number, makeRequestCallbacks);
     }
 
     private String addStringIfNotEmpty(String result,String varible, String varibleHeader, Boolean chageTheLine ){
