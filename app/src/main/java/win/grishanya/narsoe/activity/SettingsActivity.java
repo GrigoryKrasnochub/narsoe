@@ -13,8 +13,10 @@ import android.text.TextWatcher;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.SeekBar;
@@ -28,6 +30,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Switch closeModalWindowWhenCallApply;
     private Switch blockSpamCalls;
     private SeekBar modalWindowPosition;
+    private Button ratingBorderPrefix;
     private EditText inputRatingBottomBorder;
     private SharedPreferences myPreferences;
     private ViewGroup windowLayout = null;
@@ -44,6 +47,7 @@ public class SettingsActivity extends AppCompatActivity {
         blockSpamCalls = (Switch) findViewById(R.id.settingsActivityBlockSpamCallsSwitch);
         modalWindowPosition = (SeekBar) findViewById(R.id.seekBarModalWindowVerticalPosition);
         inputRatingBottomBorder = (EditText) findViewById(R.id.settingsActivityInputRatingBottomBorder);
+        ratingBorderPrefix = (Button) findViewById(R.id.settingActivityChangeRatingPrefixButton);
 
 
 
@@ -92,7 +96,32 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                myEditor.putInt("ratingBottomBorder",Integer.parseInt(s.toString()));
+                if (!s.toString().equals("")) {
+                    String fullRatingBottomBorder = myPreferences.getInt("fullRatingBottomBorder",-20) >= 0 ? "+" : "-";
+                    myEditor.putInt("ratingBottomBorder", Integer.parseInt(s.toString()));
+                    myEditor.putInt("fullRatingBottomBorder",Integer.parseInt(fullRatingBottomBorder + s.toString()));
+                    myEditor.apply();
+                }
+            }
+        });
+
+        ratingBorderPrefix.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String buttonText = ratingBorderPrefix.getText().toString();
+                int buttonTextData = Integer.parseInt(buttonText + "1");
+                switch (buttonText){
+                    case "+":
+                        buttonText = "-";
+                        break;
+
+                    case "-":
+                        buttonText = "+";
+                        break;
+                }
+                ratingBorderPrefix.setText(buttonText);
+                myEditor.putString("ratingBorderPrefix", buttonText);
+                myEditor.putInt("fullRatingBottomBorder",myPreferences.getInt("fullRatingBottomBorder",-20) * buttonTextData);
                 myEditor.apply();
             }
         });
@@ -134,7 +163,8 @@ public class SettingsActivity extends AppCompatActivity {
         defineIncomingCalls.setChecked(myPreferences.getBoolean("defineIncomingCalls",true));
         closeModalWindowWhenCallApply.setChecked(myPreferences.getBoolean("closeModalWindowWhenCallApply",true));
         blockSpamCalls.setChecked(myPreferences.getBoolean("blockSpamCalls",false));
-        inputRatingBottomBorder.setText(""+myPreferences.getInt("ratingBottomBorder",-20));
+        inputRatingBottomBorder.setText(String.valueOf(myPreferences.getInt("ratingBottomBorder",20)));
+        ratingBorderPrefix.setText(myPreferences.getString("ratingBorderPrefix","-"));
         modalWindowPosition.setProgress((myPreferences.getInt("modalWindowPosition",15)*100)/getUserScreenHeight());
     }
 

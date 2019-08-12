@@ -92,7 +92,7 @@
         android:ems="10"
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView4"
+        app:layout_constraintStart_toEndOf="@+id/settingActivityChangeRatingPrefixButton"
         app:layout_constraintTop_toBottomOf="@+id/settingsActivityBlockSpamCallsSwitch" />
 
     <TextView
@@ -105,5 +105,16 @@
         android:textColor="@color/colorTextInfo"
         app:layout_constraintBottom_toBottomOf="@+id/settingsActivityInputRatingBottomBorder"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/settingsActivityInputRatingBottomBorder" />
+
+    <Button
+        android:id="@+id/settingActivityChangeRatingPrefixButton"
+        style="@android:style/Widget.Material.Light.Button.Small"
+        android:layout_width="32dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="8dp"
+        android:text="+"
+        app:layout_constraintBottom_toBottomOf="@+id/settingsActivityInputRatingBottomBorder"
+        app:layout_constraintStart_toEndOf="@+id/textView4"
         app:layout_constraintTop_toTopOf="@+id/settingsActivityInputRatingBottomBorder" />
 </android.support.constraint.ConstraintLayout>

@@ -55,7 +55,7 @@ public class CallReceiver extends BroadcastReceiver {
                             NetworkRequests.MakeRatingRequest(phoneNumber, new NetworkRequests.MakeRatingRequestCallbacks(){
                                 @Override
                                 public void onGetResponse(Response<InfoRating> response) {
-                                    if (response.body().getRating() > myPreferences.getInt("ratingBottomBorder",-20)) {
+                                    if (response.body().getRating() > myPreferences.getInt("ratingBottomBorder",20)) {
                                         callSoundControl.returnSoundStatus();
                                         showWindow(context, peatyPhoneNumber);
                                     } else {
