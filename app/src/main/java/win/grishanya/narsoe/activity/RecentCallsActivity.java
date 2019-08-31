@@ -4,8 +4,11 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.CallLog;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,10 +33,12 @@ import java.util.Date;
 import win.grishanya.narsoe.dataClasses.Calls;
 import win.grishanya.narsoe.R;
 import win.grishanya.narsoe.RecentCallsRecycleViewAdapter;
+import win.grishanya.narsoe.language.LanguageController;
 import win.grishanya.narsoe.network.PhoneNumberHandler;
 
-public class RecentCallsActivity extends AppCompatActivity {
+public class RecentCallsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private BottomNavigationView navigation;
+    private SharedPreferences sharedPreferences;
     private EditText stringQueryEditText;
     private ArrayList<Calls> recentCallsList;
     private RecentCallsRecycleViewAdapter recentCallsRecycleViewAdapter;
@@ -59,6 +64,7 @@ public class RecentCallsActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_home:
                     Intent intent = new Intent(RecentCallsActivity.this, MainActivity.class);
+                    RecentCallsActivity.this.finish();
                     startActivity(intent);
                     //mTextMessage.setText(R.string.title_search);
                     return true;
@@ -66,6 +72,13 @@ public class RecentCallsActivity extends AppCompatActivity {
             return false;
         }
     };
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals("appLanguage")) {
+            RecentCallsActivity.this.recreate();
+        }
+    }
 
     //Activity Methods
     @Override
@@ -80,11 +93,20 @@ public class RecentCallsActivity extends AppCompatActivity {
         recentCallsRecycleViewAdapter.updateListOfRecentCalls(getListOfRecentCalls(),!stringQueryEditText.getText().toString().equals(""));
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LanguageController languageController = new LanguageController(this.getResources(), this,RecentCallsActivity.this,RecentCallsActivity.class);
         setContentView(R.layout.activity_recent_calls);
+
+        sharedPreferences  = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+
 
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         recentCalls = (RecyclerView) findViewById(R.id.recentCallsRecyclerView);
@@ -168,7 +190,7 @@ public class RecentCallsActivity extends AppCompatActivity {
                     long timeStamp = listOfRecentCalls.getLong(listOfRecentCalls.getColumnIndex(CallLog.Calls.DATE));
                     calls.date = new Date(timeStamp);
                     String name = listOfRecentCalls.getString(listOfRecentCalls.getColumnIndex(CallLog.Calls.CACHED_NAME));
-                    calls.name = name == null ? "Unknown" : listOfRecentCalls.getString(listOfRecentCalls.getColumnIndex(CallLog.Calls.CACHED_NAME));
+                    calls.name = name == null ? getResources().getString(R.string.recentCalls_activity_unknown_caller) : listOfRecentCalls.getString(listOfRecentCalls.getColumnIndex(CallLog.Calls.CACHED_NAME));
                     calls.duration = listOfRecentCalls.getString(listOfRecentCalls.getColumnIndex(CallLog.Calls.DURATION));
                     calls.type = listOfRecentCalls.getInt(listOfRecentCalls.getColumnIndex(CallLog.Calls.TYPE));
                     result.add(calls);

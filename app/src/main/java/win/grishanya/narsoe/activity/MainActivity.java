@@ -1,46 +1,38 @@
 package win.grishanya.narsoe.activity;
 
-import android.Manifest;
-import android.app.Activity;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import ru.tinkoff.decoro.FormattedTextChangeListener;
 import ru.tinkoff.decoro.MaskImpl;
 import ru.tinkoff.decoro.slots.PredefinedSlots;
 import ru.tinkoff.decoro.watchers.FormatWatcher;
 import ru.tinkoff.decoro.watchers.MaskFormatWatcher;
-import win.grishanya.narsoe.NetworkRequests;
 import win.grishanya.narsoe.R;
+import win.grishanya.narsoe.language.LanguageController;
+import win.grishanya.narsoe.permissions.PermissionChecer;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+    private SharedPreferences sharedPreferences;
+    private PermissionChecer permissionChecer;
     private Button searchButton;
     private EditText phoneNumberEditText;
     private BottomNavigationView navigation;
-    private static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE= 5469;
-    private static int ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS_REQUEST_CODE= 5470;
+
     //Navigation view
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -52,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_dashboard:
                         Intent intent = new Intent(MainActivity.this, RecentCallsActivity.class);
+                        MainActivity.this.finish();
                         startActivity(intent);
                     return true;
             }
@@ -77,6 +70,13 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals("appLanguage")) {
+            MainActivity.this.recreate();
+        }
+    }
+
     //ActivityMethods
     @Override
     protected void onPause() {
@@ -85,9 +85,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        LanguageController languageController = new LanguageController(this.getResources(), this,MainActivity.this,MainActivity.class);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LanguageController languageController = new LanguageController(this.getResources(), this,MainActivity.this,MainActivity.class);
         setContentView(R.layout.activity_main);
+        sharedPreferences  = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         phoneNumberEditText = (EditText) findViewById(R.id.phoneNumberEditText);
@@ -130,7 +144,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        checkPermissions();
+        permissionChecer = new PermissionChecer(MainActivity.this,this);
+        permissionChecer.checkPermissions();
 
     }
 
@@ -143,92 +158,19 @@ public class MainActivity extends AppCompatActivity {
         return userPhoneNumber;
     }
 
-    public void checkPermissions(){
-        List<String> listOfNecessaryPermission = new ArrayList<String>();
-
-        if (checkSelfPermission(android.Manifest.permission.READ_CALL_LOG)
-        != PackageManager.PERMISSION_GRANTED) {
-            listOfNecessaryPermission.add(Manifest.permission.READ_CALL_LOG);
-        }
-        //ToDo Проверить если необходимость в пермишене!
-        if (checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE)
-                != PackageManager.PERMISSION_GRANTED) {
-            listOfNecessaryPermission.add(Manifest.permission.READ_PHONE_STATE);
-        }
-
-        if (checkSelfPermission(android.Manifest.permission.CALL_PHONE)
-                != PackageManager.PERMISSION_GRANTED) {
-            listOfNecessaryPermission.add(Manifest.permission.CALL_PHONE);
-        }
-
-        if(!listOfNecessaryPermission.isEmpty()){
-            String [] arrayOfNecessaryPermission = new String[listOfNecessaryPermission.size()];
-            listOfNecessaryPermission.toArray(arrayOfNecessaryPermission);
-            ActivityCompat.requestPermissions(this, arrayOfNecessaryPermission, 1);
-        }
-
-        checkDrawOverlayPermission();
-        checkNotificationPolicyAccess();
-
-    }
 
     //necessary to check READ_CALL_LOG READ_PHONE_STATE
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-            checkPermissions();
-        }
+        permissionChecer.checkPermissionsOnResult(grantResults);
     }
 
-    public void checkDrawOverlayPermission() {
-        /** check if we already  have permission to draw over other apps */
-        //Only for Api 23 or Higher
-        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            if (!Settings.canDrawOverlays(this)) {
-                /** if not construct intent to request permission */
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:" + getPackageName()));
-                /** request permission via start activity for result */
-                startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE);
-            }
-        }
-    }
-
-    public void checkNotificationPolicyAccess() {
-        /** check if we already  have permission to draw over other apps */
-        //Only for Api 23 or Higher
-        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            NotificationManager notificationManager =
-                    (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
-            if (!notificationManager.isNotificationPolicyAccessGranted()) {
-
-                Intent intent = new Intent(
-                        Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-
-                startActivityForResult(intent,ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS_REQUEST_CODE);
-            }
-        }
-    }
     //necessary to check ACTION_MANAGE_OVERLAY_PERMISSION
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode != ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE){
-            if (!Settings.canDrawOverlays(this)) {
-                checkDrawOverlayPermission();
-            }
-        }
-        if (requestCode != ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE){
-            NotificationManager notificationManager =
-                    (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-            if (!notificationManager.isNotificationPolicyAccessGranted()) {
-                checkNotificationPolicyAccess();
-            }
-        }
+        permissionChecer.checkPermissionsResultByRequestCode(requestCode);
     }
 }
 

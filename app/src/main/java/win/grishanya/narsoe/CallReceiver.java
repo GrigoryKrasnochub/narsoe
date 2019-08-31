@@ -1,12 +1,16 @@
 package win.grishanya.narsoe;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,9 +20,12 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 import retrofit2.Response;
 import win.grishanya.narsoe.dataClasses.InfoListShort;
 import win.grishanya.narsoe.dataClasses.InfoRating;
+import win.grishanya.narsoe.language.LanguageController;
 import win.grishanya.narsoe.network.PhoneNumberHandler;
 
 public class CallReceiver extends BroadcastReceiver {
@@ -41,9 +48,6 @@ public class CallReceiver extends BroadcastReceiver {
                     if (phoneState.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                         //Трубка не поднята, телефон звонит
 
-                        final CallSoundControl callSoundControl = new CallSoundControl(context);
-                        callSoundControl.turnOffSound();
-
                         incomingCall = true;
 
                         String phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
@@ -52,13 +56,18 @@ public class CallReceiver extends BroadcastReceiver {
                         final String peatyPhoneNumber = phoneNumberHandler.prettifyPhoneNumber(phoneNumber);
 
                         if(myPreferences.getBoolean("blockSpamCalls",false)) {
-                            NetworkRequests.MakeRatingRequest(phoneNumber, new NetworkRequests.MakeRatingRequestCallbacks(){
+                            final CallSoundControl callSoundControl = new CallSoundControl(context);
+                            callSoundControl.turnOffSound();
+                            NetworkRequests networkRequests = new NetworkRequests(myPreferences.getString("domainURL","https://narsoe.ga/"));
+                            networkRequests.MakeRatingRequest(phoneNumber, new NetworkRequests.MakeRatingRequestCallbacks(){
                                 @Override
                                 public void onGetResponse(Response<InfoRating> response) {
-                                    if (response.body().getRating() > myPreferences.getInt("ratingBottomBorder",20)) {
+                                    if (response.body().getRating() > myPreferences.getInt("ratingBottomBorder", context.getResources().getInteger(R.integer.defaultSettingBottomRatingBorder))) {
+                                        Log.d("Call Block",String.valueOf(context.getResources().getInteger(R.integer.defaultSettingBottomRatingBorder)));
                                         callSoundControl.returnSoundStatus();
                                         showWindow(context, peatyPhoneNumber);
                                     } else {
+                                        Log.d("Call Block","Blocked");
                                         CallBlock callBlock = new CallBlock();
                                         callBlock.disconnectIncomingCall(context, new CallBlock.DisconnectIncomingCallCallBack() {
                                             @Override
@@ -83,7 +92,6 @@ public class CallReceiver extends BroadcastReceiver {
                             });
 
                         }else{
-                            callSoundControl.returnSoundStatus();
                             showWindow(context, peatyPhoneNumber);
                         }
 
@@ -110,6 +118,7 @@ public class CallReceiver extends BroadcastReceiver {
     public void showWindow(final Context context, String phone) {
         int modalWindowPosition = myPreferences.getInt("modalWindowPosition", 15);
 
+        LanguageController languageController = new LanguageController(context.getResources(),context);
 
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -139,7 +148,7 @@ public class CallReceiver extends BroadcastReceiver {
         });
 
         final TextView informationTextView = (TextView) windowLayout.findViewById(R.id.informationTextView);
-        ResponseDataHandler responseDataHandler = new ResponseDataHandler();
+        ResponseDataHandler responseDataHandler = new ResponseDataHandler(myPreferences.getString("domainURL","https://narsoe.ga/"));
         ResponseDataHandler.NumberInfoCallbacks numberInfoCallbacks = new ResponseDataHandler.NumberInfoCallbacks() {
             @Override
             public void onGetNumberInfo(String result) {
@@ -151,7 +160,7 @@ public class CallReceiver extends BroadcastReceiver {
                 informationTextView.setText(R.string.bad_request);
             }
         };
-        responseDataHandler.getNumberInfo(phone,numberInfoCallbacks);
+        responseDataHandler.getNumberInfo(phone,context.getResources(),numberInfoCallbacks);
         windowManager.addView(windowLayout, params);
     }
 

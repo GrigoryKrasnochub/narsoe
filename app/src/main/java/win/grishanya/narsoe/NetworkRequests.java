@@ -1,15 +1,27 @@
 package win.grishanya.narsoe;
 
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import win.grishanya.narsoe.activity.SettingsActivity;
 import win.grishanya.narsoe.dataClasses.InfoListShort;
 import win.grishanya.narsoe.dataClasses.InfoRating;
-import win.grishanya.narsoe.network.GetShortInformation;
+import win.grishanya.narsoe.dataClasses.ServerVersion;
+import win.grishanya.narsoe.network.ApiInterface;
 import win.grishanya.narsoe.network.PhoneNumberHandler;
 import win.grishanya.narsoe.network.RetrofitInstance;
 
 public class NetworkRequests {
+    private String URL;
+
+    public NetworkRequests(String url){
+        URL = url;
+    }
 
     public interface MakeRequestCallbacks {
         void onGetResponse (Response<InfoListShort> response);
@@ -21,13 +33,37 @@ public class NetworkRequests {
         void onGetFailed (Throwable error);
     }
 
+    public interface MakeServerVersionRequestCallbacks {
+        void onGetResponse (Response<ServerVersion> response);
+        void onGetFailed (Throwable error);
+    }
 
+    public void MakeServerVersionRequest(final MakeServerVersionRequestCallbacks makeRequestCallbacks){
+        ApiInterface service = RetrofitInstance.getRetrofitInstance(URL).create(ApiInterface.class);
+        Call<ServerVersion> call = service.getVersion();
+        call.enqueue(new Callback<ServerVersion>() {
+            @Override
+            public void onResponse(Call<ServerVersion> call, Response<ServerVersion> response) {
+                if (response.code()==200){
+                    makeRequestCallbacks.onGetResponse(response);
+                }else{
+                    Throwable t = new Throwable();
+                    makeRequestCallbacks.onGetFailed(t);
+                }
+            }
 
-    public static void MakeRequest(String number, final MakeRequestCallbacks makeRequestCallbacks){
+            @Override
+            public void onFailure(Call<ServerVersion> call, Throwable t) {
+                makeRequestCallbacks.onGetFailed(t);
+            }
+        });
+    }
+
+    public void MakeRequest(String number, final MakeRequestCallbacks makeRequestCallbacks){
         PhoneNumberHandler phoneNumberHandler = new PhoneNumberHandler();
         number = phoneNumberHandler.validatePhoneNumber(number);
 
-        GetShortInformation service = RetrofitInstance.getRetrofitInstance().create(GetShortInformation.class);
+        ApiInterface service = RetrofitInstance.getRetrofitInstance(URL).create(ApiInterface.class);
         Call<InfoListShort> call = service.getData(number);
         call.enqueue(new Callback<InfoListShort>() {
             @Override
@@ -47,11 +83,11 @@ public class NetworkRequests {
         });
     }
 
-    public static void MakeRatingRequest(String number, final MakeRatingRequestCallbacks makeRatingRequestCallbacks){
+    public void MakeRatingRequest(String number, final MakeRatingRequestCallbacks makeRatingRequestCallbacks){
         PhoneNumberHandler phoneNumberHandler = new PhoneNumberHandler();
         number = phoneNumberHandler.validatePhoneNumber(number);
 
-        GetShortInformation service = RetrofitInstance.getRetrofitInstance().create(GetShortInformation.class);
+        ApiInterface service = RetrofitInstance.getRetrofitInstance(URL).create(ApiInterface.class);
         Call<InfoRating> call = service.getRating(number);
         call.enqueue(new Callback<InfoRating>() {
             @Override

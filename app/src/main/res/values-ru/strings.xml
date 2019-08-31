@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bad_request">Упс… Что-то пошло не так</string>
+    <string name="button_search_label">Поиск</string>
+    <string name="call_info_info_example">Имя  Иванов \nРейтинг  +100500 \nТип  Домашний</string>
+    <string name="info_block_info_header">Информация</string>
+    <string name="info_caller_phone">Номер телефона</string>
+    <string name="recentCallsActivityNumberCopied">Номер скопирован</string>
+    <string name="recentCallsActivitySearchQuery">Поиск</string>
+    <string name="seacth_input_hint">Номер телефона</string>
+    <string name="setting_activity_block_spam_calls">Блокировка спам звонков</string>
+    <string name="setting_activity_input_bottom_rating_border">Нижняя граница рейтинга</string>
+    <string name="setting_modal_window_position">Позиция всплывающего окна</string>
+    <string name="setting_plain_text_hint">Домен</string>
+    <string name="setting_switch_define_incoming_call">Определять входящие звонки</string>
+    <string name="setting_switch_show_modal_window">Закрывать окно когда звонок принят</string>
+    <string name="title_notifications">Уведомления</string>
+    <string name="title_recent_calls">Надавние звонки</string>
+    <string name="title_search">Поиск</string>
+    <string name="title_settings">Настройки</string>
+    <string name="setting_activity_language_setting">Язык</string>
+    <string name="recentCalls_activity_unknown_caller">Неизвестный</string>
+    <string name="responseHandler_comment">Комментарий</string>
+    <string name="responseHandler_avito_adress">Авито адресс</string>
+    <string name="responseHandler_avito_name">Авито имя</string>
+    <string name="responseHandler_company_adress">Адресс компании</string>
+    <string name="responseHandler_company_city">Город компании</string>
+    <string name="responseHandler_company_description">Инфо. компании</string>
+    <string name="responseHandler_company_email">Email компании</string>
+    <string name="responseHandler_company_name">Имя компании</string>
+    <string name="responseHandler_company_telephone">Телефон компании</string>
+    <string name="responseHandler_company_url">Сайт компании</string>
+    <string name="responseHandler_name">Имя</string>
+    <string name="responseHandler_rating">Рейтинг</string>
+    <string name="responseHandler_region">Регион</string>
+    <string name="responseHandler_type">Тип</string>
+    <string name="setting_activity_domain_info_header">URL домена</string>
+    <string name="setting_activity_server_version">Версия сервера</string>
+    <string name="setting_activity_server_version_request_error">СЕРВЕР НЕДОСТУПЕН</string>
+</resources>

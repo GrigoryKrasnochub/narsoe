@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">narsoe</string>
+    <string name="app_name" translatable="false">narsoe</string>
     <string name="title_search">Search</string>
     <string name="title_recent_calls">Recent calls</string>
     <string name="title_settings">Settings</string>
@@ -12,11 +12,30 @@
     <string name="info_caller_phone">Phone number</string>
     <string name="info_block_info_header">Some information</string>
     <string name="bad_request">Oooh… Something went wrong</string>
-    <string name="call_info_number_example">555–555–555</string>
+    <string name="call_info_number_example" translatable="false">555–555–555</string>
     <string name="call_info_info_example">Name SomeName \nRating SomeNumber \nType SomeType</string>
     <string name="setting_modal_window_position">Modal window position</string>
     <string name="setting_activity_block_spam_calls">Block spam calls</string>
+    <string name="setting_activity_language_setting">Language</string>
     <string name="setting_activity_input_bottom_rating_border">Input bottom rating border</string>
+    <string name="setting_activity_domain_info_header">Domain URL</string>
+    <string name="setting_activity_server_version">Server version</string>
+    <string name="setting_activity_server_version_request_error">SERVER IS NOT AVAILABLE</string>
     <string name="recentCallsActivityNumberCopied">Number copied</string>
     <string name="recentCallsActivitySearchQuery">Search query</string>
+    <string name="recentCalls_activity_unknown_caller">Unknown</string>
+    <string name="responseHandler_company_name">Company name</string>
+    <string name="responseHandler_company_description">Company desc</string>
+    <string name="responseHandler_company_city">Company city</string>
+    <string name="responseHandler_company_url">Company URL</string>
+    <string name="responseHandler_company_telephone">Company Telephone</string>
+    <string name="responseHandler_company_adress">Company address</string>
+    <string name="responseHandler_company_email">Company email</string>
+    <string name="responseHandler_name">Name</string>
+    <string name="responseHandler_rating">Rating</string>
+    <string name="responseHandler_region">Region</string>
+    <string name="responseHandler_avito_name">Avito name</string>
+    <string name="responseHandler_avito_adress">Avito address</string>
+    <string name="responseHandler_type">Type</string>
+    <string name="responseHandler_comment">Comment</string>
 </resources>

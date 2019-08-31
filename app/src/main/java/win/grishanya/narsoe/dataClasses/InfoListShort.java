@@ -10,9 +10,9 @@ public class InfoListShort {
     @SerializedName("Rating")
     @Expose
     private int rating;
-    @SerializedName("Avito")
+    @SerializedName("Extra")
     @Expose
-    private InfoListShort_Avito avito;
+    private InfoListShort_Extra extra;
     @SerializedName("Name")
     @Expose
     private String name;
@@ -77,11 +77,11 @@ public class InfoListShort {
         this.company = company;
     }
 
-    public InfoListShort_Avito getAvito() {
-        return avito;
+    public InfoListShort_Extra getExtra() {
+        return extra;
     }
 
-    public void setAvito(InfoListShort_Avito avito) {
-        this.avito = avito;
+    public void setExtra(InfoListShort_Extra extra) {
+        this.extra = extra;
     }
 }

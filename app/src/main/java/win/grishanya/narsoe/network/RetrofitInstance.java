@@ -15,12 +15,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitInstance {
 
     private static Retrofit retrofit;
-    private static final String BASE_URL = "https://narsoe.ga/";
+    private static String BASE_URL = "https://narsoe.ga/";
+    //private static final String BASE_URL = "http://45.67.230.153:9999/";
 
 
-    public static Retrofit getRetrofitInstance() {
-        if (retrofit == null) {
-
+    public static Retrofit getRetrofitInstance(String URL) {
+        if (retrofit == null || !BASE_URL.equals(URL)) {
+            BASE_URL = URL;
             Interceptor timeoutInterceptor = new Interceptor() {
 
                 @Override

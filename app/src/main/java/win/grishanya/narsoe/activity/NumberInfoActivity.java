@@ -1,8 +1,9 @@
 package win.grishanya.narsoe.activity;
 
 import android.content.Intent;
-import android.net.NetworkRequest;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
@@ -10,7 +11,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import win.grishanya.narsoe.NetworkRequests;
 import win.grishanya.narsoe.R;
 import win.grishanya.narsoe.ResponseDataHandler;
 import win.grishanya.narsoe.network.PhoneNumberHandler;
@@ -20,6 +20,7 @@ public class NumberInfoActivity extends AppCompatActivity {
     TextView phoneNumberTextView;
     TextView informationTextView;
     ProgressBar downloadProgressBar;
+    private SharedPreferences myPreferences;
     String phoneNumber;
 
     @Override
@@ -35,6 +36,8 @@ public class NumberInfoActivity extends AppCompatActivity {
 
         informationTextView.setMovementMethod(new ScrollingMovementMethod());
 
+        myPreferences =  PreferenceManager.getDefaultSharedPreferences(this);
+
         Intent intent = getIntent();
         phoneNumber = phoneNumberHandler.prettifyPhoneNumber(intent.getStringExtra("phoneNumber"));
         phoneNumberTextView.setText(phoneNumber);
@@ -42,8 +45,8 @@ public class NumberInfoActivity extends AppCompatActivity {
     }
 
     protected void ShowNumberInfo(final String phoneNumber){
-        ResponseDataHandler responseDataHandler = new ResponseDataHandler();
-        responseDataHandler.getFullNumberInfo(phoneNumber, new ResponseDataHandler.NumberInfoCallbacks() {
+        ResponseDataHandler responseDataHandler = new ResponseDataHandler(myPreferences.getString("domainURL","https://narsoe.ga/"));
+        responseDataHandler.getFullNumberInfo(phoneNumber, getResources(),new ResponseDataHandler.NumberInfoCallbacks() {
             @Override
             public void onGetNumberInfo(String result) {
                 informationTextView.setText(result);
