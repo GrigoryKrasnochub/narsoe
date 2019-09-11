@@ -37,4 +37,5 @@
     <string name="setting_activity_domain_info_header">URL домена</string>
     <string name="setting_activity_server_version">Версия сервера</string>
     <string name="setting_activity_server_version_request_error">СЕРВЕР НЕДОСТУПЕН</string>
+    <string name="number_info_activity_general">Общие</string>
 </resources>
