@@ -39,4 +39,5 @@
     <string name="responseHandler_avito_adress">Avito address</string>
     <string name="responseHandler_type">Type</string>
     <string name="responseHandler_comment">Comment</string>
+    <string name="number_info_activity_general_info_description">Briefly share with you information</string>
 </resources>

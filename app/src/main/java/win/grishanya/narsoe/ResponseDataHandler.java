@@ -2,9 +2,11 @@ package win.grishanya.narsoe;
 
 import android.content.res.Resources;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Response;
+import win.grishanya.narsoe.dataClasses.ExpandedViewsWrapper;
 import win.grishanya.narsoe.dataClasses.InfoListShort;
 import win.grishanya.narsoe.dataClasses.ServerVersion;
 
@@ -18,6 +20,11 @@ public class ResponseDataHandler {
 
     public interface NumberInfoCallbacks{
         void onGetNumberInfo(String result);
+        void onGetNumberInfoFailed(Throwable error);
+    }
+
+    public interface NumberInfoFullInExpandedViewsWrapperCallbacks{
+        void onGetNumberInfo(ArrayList<ExpandedViewsWrapper> result);
         void onGetNumberInfoFailed(Throwable error);
     }
 
@@ -111,6 +118,49 @@ public class ResponseDataHandler {
                 if(!response.body().getComments().isEmpty()){
                     result = addStringIfNotEmpty(result,response.body().getComments(),resources.getString(R.string.responseHandler_comment),false);
                 }
+                numberInfoCallbacks.onGetNumberInfo(result);
+            }
+
+            @Override
+            public void onGetFailed(Throwable error) {
+                numberInfoCallbacks.onGetNumberInfoFailed(error);
+            }
+        };
+
+        NetworkRequests networkRequests = new NetworkRequests(URL);
+        networkRequests.MakeRequest(number, makeRequestCallbacks);
+    }
+
+    public void getFullNumberInfoInExpandedViewsWrapper (String number, final Resources resources, final NumberInfoFullInExpandedViewsWrapperCallbacks numberInfoCallbacks){
+        NetworkRequests.MakeRequestCallbacks makeRequestCallbacks = new NetworkRequests.MakeRequestCallbacks() {
+            @Override
+            public void onGetResponse(Response<InfoListShort> response) {
+                ArrayList<ExpandedViewsWrapper> result = new ArrayList<>();
+//                if(response.body().getCompany() != null) {
+//                    result = addStringIfNotEmpty(result,response.body().getCompany().getName(),resources.getString(R.string.responseHandler_company_name),true);
+//                    result = addStringIfNotEmpty(result,response.body().getCompany().getDescription(),resources.getString(R.string.responseHandler_company_description),true);
+//                    result = addStringIfNotEmpty(result,response.body().getCompany().getCity(),resources.getString(R.string.responseHandler_company_city),true);
+//                    result = addStringIfNotEmpty(result,response.body().getCompany().getUrl(),resources.getString(R.string.responseHandler_company_url),true);
+//                    result = addStringIfNotEmpty(result,response.body().getCompany().getTelephone(),resources.getString(R.string.responseHandler_company_telephone),true);
+//                    result = addStringIfNotEmpty(result,response.body().getCompany().getAddress(),resources.getString(R.string.responseHandler_company_adress),true);
+//                    result = addStringIfNotEmpty(result,response.body().getCompany().getEmail(),resources.getString(R.string.responseHandler_company_email),true);
+//                    result += "\n";
+//                }
+//
+//                result = addStringIfNotEmpty(result,response.body().getName(),resources.getString(R.string.responseHandler_name),true);
+//                result = addStringIfNotEmpty(result,String.valueOf(response.body().getRating()),resources.getString(R.string.responseHandler_rating),true);
+//                result = addStringIfNotEmpty(result,response.body().getType(),resources.getString(R.string.responseHandler_type),true);
+//                result = addStringIfNotEmpty(result,response.body().getRegion(),resources.getString(R.string.responseHandler_region),true);
+//                result += "\n";
+//                if(response.body().getExtra() != null) {
+//                    if(response.body().getExtra().getAvito() != null) {
+//                        result = addStringIfNotEmpty(result, response.body().getExtra().getAvito().getName(), resources.getString(R.string.responseHandler_avito_name), true);
+//                        result = addStringIfNotEmpty(result, response.body().getExtra().getAvito().getAddress(), resources.getString(R.string.responseHandler_avito_adress), true);
+//                    }
+//                }
+//                if(!response.body().getComments().isEmpty()){
+//                    result = addStringIfNotEmpty(result,response.body().getComments(),resources.getString(R.string.responseHandler_comment),false);
+//                }
                 numberInfoCallbacks.onGetNumberInfo(result);
             }
 

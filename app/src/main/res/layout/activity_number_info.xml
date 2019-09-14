@@ -71,9 +71,9 @@
                 android:id="@+id/numberInfoActivityGeneralInfoTitleTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginStart="8dp"
                 android:layout_weight="10"
                 android:gravity="start"
                 android:text="@string/number_info_activity_general"
@@ -89,15 +89,36 @@
                 app:srcCompat="@android:drawable/arrow_up_float" />
 
         </LinearLayout>
-        <TextView
-            android:id="@+id/numberInfoActivityGeneralInfoTextTextView"
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_weight="10"
-            android:text="TextViewООООООООООООООООООООООООООООООООООООООООООООООООООООООООООООО МОЯ ОБОРОНА ОООООООООООООООООООООООООООООООООО" />
+            android:id="@+id/numberInfoActivityGeneralInfoContentWrapper"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/numberInfoActivityGeneralInfoTextTextView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_weight="10"
+                android:text="@string/number_info_activity_general_info_description" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/numberInfoActivityGeneralInfoTextRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:elevation="15dp"
+                android:focusable="true"
+                android:scrollbars="vertical"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
