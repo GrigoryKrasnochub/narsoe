@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Response;
+import win.grishanya.narsoe.dataClasses.ExpandedRecyclerViewData;
 import win.grishanya.narsoe.dataClasses.ExpandedViewsWrapper;
 import win.grishanya.narsoe.dataClasses.InfoListShort;
 import win.grishanya.narsoe.dataClasses.ServerVersion;
@@ -136,22 +137,30 @@ public class ResponseDataHandler {
             @Override
             public void onGetResponse(Response<InfoListShort> response) {
                 ArrayList<ExpandedViewsWrapper> result = new ArrayList<>();
-//                if(response.body().getCompany() != null) {
-//                    result = addStringIfNotEmpty(result,response.body().getCompany().getName(),resources.getString(R.string.responseHandler_company_name),true);
-//                    result = addStringIfNotEmpty(result,response.body().getCompany().getDescription(),resources.getString(R.string.responseHandler_company_description),true);
-//                    result = addStringIfNotEmpty(result,response.body().getCompany().getCity(),resources.getString(R.string.responseHandler_company_city),true);
-//                    result = addStringIfNotEmpty(result,response.body().getCompany().getUrl(),resources.getString(R.string.responseHandler_company_url),true);
-//                    result = addStringIfNotEmpty(result,response.body().getCompany().getTelephone(),resources.getString(R.string.responseHandler_company_telephone),true);
-//                    result = addStringIfNotEmpty(result,response.body().getCompany().getAddress(),resources.getString(R.string.responseHandler_company_adress),true);
-//                    result = addStringIfNotEmpty(result,response.body().getCompany().getEmail(),resources.getString(R.string.responseHandler_company_email),true);
-//                    result += "\n";
-//                }
+
+                ExpandedViewsWrapper expandedViewsWrapperGeneral = new ExpandedViewsWrapper();
+                expandedViewsWrapperGeneral.Header = resources.getString(R.string.number_info_activity_general);
+                expandedViewsWrapperGeneral.Description = resources.getString(R.string.number_info_activity_general_info_description);
+                ArrayList<ExpandedRecyclerViewData> infoGeneral = new ArrayList<>();
+
+                addDataToArrayList(infoGeneral,response.body().getName(),resources.getString(R.string.responseHandler_name));
+                addDataToArrayList(infoGeneral,String.valueOf(response.body().getRating()),resources.getString(R.string.responseHandler_rating));
+                addDataToArrayList(infoGeneral,response.body().getType(),resources.getString(R.string.responseHandler_type));
+                addDataToArrayList(infoGeneral,response.body().getRegion(),resources.getString(R.string.responseHandler_region));
+                if(response.body().getCompany() != null) {
+                    addDataToArrayList(infoGeneral,response.body().getCompany().getName(),resources.getString(R.string.responseHandler_company_name));
+                    addDataToArrayList(infoGeneral,response.body().getCompany().getDescription(),resources.getString(R.string.responseHandler_company_description));
+                    addDataToArrayList(infoGeneral,response.body().getCompany().getCity(),resources.getString(R.string.responseHandler_company_city));
+                    addDataToArrayList(infoGeneral,response.body().getCompany().getUrl(),resources.getString(R.string.responseHandler_company_url));
+                    addDataToArrayList(infoGeneral,response.body().getCompany().getTelephone(),resources.getString(R.string.responseHandler_company_telephone));
+                    addDataToArrayList(infoGeneral,response.body().getCompany().getAddress(),resources.getString(R.string.responseHandler_company_adress));
+                    addDataToArrayList(infoGeneral,response.body().getCompany().getEmail(),resources.getString(R.string.responseHandler_company_email));
+                }
+
+                expandedViewsWrapperGeneral.data = infoGeneral;
+                result.add(expandedViewsWrapperGeneral);
+                result.add(expandedViewsWrapperGeneral);
 //
-//                result = addStringIfNotEmpty(result,response.body().getName(),resources.getString(R.string.responseHandler_name),true);
-//                result = addStringIfNotEmpty(result,String.valueOf(response.body().getRating()),resources.getString(R.string.responseHandler_rating),true);
-//                result = addStringIfNotEmpty(result,response.body().getType(),resources.getString(R.string.responseHandler_type),true);
-//                result = addStringIfNotEmpty(result,response.body().getRegion(),resources.getString(R.string.responseHandler_region),true);
-//                result += "\n";
 //                if(response.body().getExtra() != null) {
 //                    if(response.body().getExtra().getAvito() != null) {
 //                        result = addStringIfNotEmpty(result, response.body().getExtra().getAvito().getName(), resources.getString(R.string.responseHandler_avito_name), true);
@@ -173,6 +182,33 @@ public class ResponseDataHandler {
         NetworkRequests networkRequests = new NetworkRequests(URL);
         networkRequests.MakeRequest(number, makeRequestCallbacks);
     }
+
+    private ArrayList<ExpandedRecyclerViewData> addDataToArrayList(ArrayList<ExpandedRecyclerViewData> result,String variable,String header){
+        if(!variable.isEmpty()){
+             ExpandedRecyclerViewData expandedRecyclerViewData = new ExpandedRecyclerViewData();
+             expandedRecyclerViewData.Header = header;
+             expandedRecyclerViewData.Info = variable;
+            result.add(expandedRecyclerViewData);
+        }
+        return result;
+    }
+
+    private ArrayList<ExpandedRecyclerViewData> addDataToArrayList(ArrayList<ExpandedRecyclerViewData> result,List<String> variable,String header){
+        if(!variable.isEmpty()){
+            ExpandedRecyclerViewData expandedRecyclerViewData = new ExpandedRecyclerViewData();
+            expandedRecyclerViewData.Header = header;
+            StringBuilder sb = new StringBuilder(variable.get(0));
+            variable.remove(0);
+            for (String var: variable){
+                sb.append(",");
+                sb.append(var);
+            }
+            expandedRecyclerViewData.Info = sb.toString();
+            result.add(expandedRecyclerViewData);
+        }
+        return result;
+    }
+
 
     private String addStringIfNotEmpty(String result,String varible, String varibleHeader, Boolean chageTheLine ){
 

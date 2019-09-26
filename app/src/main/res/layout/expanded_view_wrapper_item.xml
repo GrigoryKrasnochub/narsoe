@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/numberInfoActivityGeneralInfoWrapper"
+    android:id="@+id/expandedViewWrapperWrapper"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
     android:layout_marginEnd="8dp"
-    android:animateLayoutChanges="true"
     android:background="@color/cardview_shadow_start_color"
     android:orientation="vertical">
 
@@ -17,7 +16,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/numberInfoActivityGeneralInfoTitleTextView"
+            android:id="@+id/expandedViewItemHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -30,7 +29,7 @@
             android:textSize="10pt" />
 
         <ImageView
-            android:id="@+id/numberInfoActivityGeneralTitleImageImageView"
+            android:id="@+id/expandedViewWrapperTitleImageImageView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginEnd="8dp"
@@ -40,16 +39,16 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/numberInfoActivityGeneralInfoContentWrapper"
+        android:id="@+id/expandedViewWrapperContentWrapper"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/numberInfoActivityGeneralInfoTextTextView"
+            android:id="@+id/expandedViewWrapperDescription"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
@@ -57,9 +56,13 @@
             android:text="@string/number_info_activity_general_info_description" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/numberInfoActivityGeneralInfoTextRecyclerView"
+            android:id="@+id/expandedViewWrapperInfoItemWrapper"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="10"
             android:clickable="true"
             android:elevation="15dp"
             android:focusable="true"

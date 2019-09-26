@@ -4,5 +4,6 @@ import java.util.ArrayList;
 
 public class ExpandedViewsWrapper {
     public String Header;
+    public String Description;
     public ArrayList<ExpandedRecyclerViewData> data;
 }

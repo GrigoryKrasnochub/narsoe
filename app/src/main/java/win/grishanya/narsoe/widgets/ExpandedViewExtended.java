@@ -73,12 +73,10 @@ public class ExpandedViewExtended {
                             View childView = ((LinearLayout) AnimatedView).getChildAt(i);
                             childView.setVisibility(View.VISIBLE);
                         }
-
                     }
                     AnimationHandler.slide_down_with_callback(context, AnimatedView, new AnimationHandler.AnimationHandlerCallbacks() {
                         @Override
                         public void OnAnimationEnded() {
-
                         }
                     });
                 }
