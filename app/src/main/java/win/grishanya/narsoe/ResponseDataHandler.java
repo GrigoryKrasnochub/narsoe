@@ -7,7 +7,7 @@ import java.util.List;
 
 import retrofit2.Response;
 import win.grishanya.narsoe.dataClasses.ExpandedRecyclerViewData;
-import win.grishanya.narsoe.dataClasses.ExpandedViewsWrapper;
+import win.grishanya.narsoe.dataClasses.ExpandedViewsWrapperData;
 import win.grishanya.narsoe.dataClasses.InfoListShort;
 import win.grishanya.narsoe.dataClasses.ServerVersion;
 
@@ -25,7 +25,7 @@ public class ResponseDataHandler {
     }
 
     public interface NumberInfoFullInExpandedViewsWrapperCallbacks{
-        void onGetNumberInfo(ArrayList<ExpandedViewsWrapper> result);
+        void onGetNumberInfo(ArrayList<ExpandedViewsWrapperData> result);
         void onGetNumberInfoFailed(Throwable error);
     }
 
@@ -136,12 +136,12 @@ public class ResponseDataHandler {
         NetworkRequests.MakeRequestCallbacks makeRequestCallbacks = new NetworkRequests.MakeRequestCallbacks() {
             @Override
             public void onGetResponse(Response<InfoListShort> response) {
-                ArrayList<ExpandedViewsWrapper> result = new ArrayList<>();
+                ArrayList<ExpandedViewsWrapperData> result = new ArrayList<>();
 
-                ExpandedViewsWrapper expandedViewsWrapperGeneral = new ExpandedViewsWrapper();
+                ExpandedViewsWrapperData expandedViewsWrapperGeneral = new ExpandedViewsWrapperData();
                 expandedViewsWrapperGeneral.Header = resources.getString(R.string.number_info_activity_general);
                 expandedViewsWrapperGeneral.Description = resources.getString(R.string.number_info_activity_general_info_description);
-                expandedViewsWrapperGeneral.Expand = true;
+                expandedViewsWrapperGeneral.Expanded = true;
                 ArrayList<ExpandedRecyclerViewData> infoGeneral = new ArrayList<>();
 
                 addDataToArrayList(infoGeneral,response.body().getName(),resources.getString(R.string.responseHandler_name));
@@ -161,7 +161,7 @@ public class ResponseDataHandler {
                 expandedViewsWrapperGeneral.data = infoGeneral;
                 result.add(expandedViewsWrapperGeneral);
 
-                ExpandedViewsWrapper expandedViewsWrapperExtra = new ExpandedViewsWrapper();
+                ExpandedViewsWrapperData expandedViewsWrapperExtra = new ExpandedViewsWrapperData();
                 expandedViewsWrapperExtra.Header = resources.getString(R.string.number_info_activity_extra);
                 expandedViewsWrapperExtra.Description = resources.getString(R.string.number_info_activity_extra_info_description);
                 ArrayList<ExpandedRecyclerViewData> infoExtra = new ArrayList<>();
@@ -175,7 +175,7 @@ public class ResponseDataHandler {
                     result.add(expandedViewsWrapperExtra);
                 }
 
-                ExpandedViewsWrapper expandedViewsWrapperComments = new ExpandedViewsWrapper();
+                ExpandedViewsWrapperData expandedViewsWrapperComments = new ExpandedViewsWrapperData();
                 expandedViewsWrapperComments.Header = resources.getString(R.string.number_info_activity_comments);
                 expandedViewsWrapperComments.Description = resources.getString(R.string.number_info_activity_comments_info_description);
                 ArrayList<ExpandedRecyclerViewData> infoComments = new ArrayList<>();

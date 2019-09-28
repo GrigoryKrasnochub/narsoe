@@ -6,11 +6,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,8 +17,7 @@ import java.util.ArrayList;
 import win.grishanya.narsoe.NumberInfoWrapperRecyclerView;
 import win.grishanya.narsoe.R;
 import win.grishanya.narsoe.ResponseDataHandler;
-import win.grishanya.narsoe.dataClasses.ExpandedRecyclerViewData;
-import win.grishanya.narsoe.dataClasses.ExpandedViewsWrapper;
+import win.grishanya.narsoe.dataClasses.ExpandedViewsWrapperData;
 import win.grishanya.narsoe.network.PhoneNumberHandler;
 
 public class NumberInfoActivity extends AppCompatActivity {
@@ -65,10 +61,9 @@ public class NumberInfoActivity extends AppCompatActivity {
         ResponseDataHandler responseDataHandler = new ResponseDataHandler(myPreferences.getString("domainURL","https://narsoe.ga/"));
         responseDataHandler.getFullNumberInfoInExpandedViewsWrapper(phoneNumber, getResources(), new ResponseDataHandler.NumberInfoFullInExpandedViewsWrapperCallbacks() {
             @Override
-            public void onGetNumberInfo(ArrayList<ExpandedViewsWrapper> result) {
+            public void onGetNumberInfo(ArrayList<ExpandedViewsWrapperData> result) {
                 NumberInfoWrapperRecyclerView numberInfoWrapperRecyclerView = new NumberInfoWrapperRecyclerView(result);
                 infoTextWrapperRecyclerView.setAdapter(numberInfoWrapperRecyclerView);
-
                 downloadProgressBar.setVisibility(View.GONE);
                 informationTextView.setVisibility(View.GONE);
             }

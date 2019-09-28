@@ -10,18 +10,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-import win.grishanya.narsoe.dataClasses.ExpandedViewsWrapper;
-import win.grishanya.narsoe.widgets.ExpandedRecyclerView.ExpandedRecyclerView;
-import win.grishanya.narsoe.widgets.ExpandedRecyclerView.ExpandedViewRecyclerViewAdapter;
+import win.grishanya.narsoe.dataClasses.ExpandedViewsWrapperData;
 import win.grishanya.narsoe.widgets.ExpandedViewWrapper;
 
 public class NumberInfoWrapperRecyclerView extends RecyclerView.Adapter<NumberInfoWrapperRecyclerView.NumberInfoWrapperRecyclerViewHolder> {
 
-    private ArrayList<ExpandedViewsWrapper> expandedViewWrapper = new ArrayList<>();
-    private static Boolean [] ExpandedViewsMap = new Boolean[]{true,false};
+    private ArrayList<ExpandedViewsWrapperData> expandedViewWrapper = new ArrayList<>();
 
     public class NumberInfoWrapperRecyclerViewHolder extends RecyclerView.ViewHolder {
         public TextView infoBlockHeader;
@@ -45,9 +41,9 @@ public class NumberInfoWrapperRecyclerView extends RecyclerView.Adapter<NumberIn
 
     }
 
-    public NumberInfoWrapperRecyclerView(ArrayList<ExpandedViewsWrapper> expandedViewsWrapper) {
+    public NumberInfoWrapperRecyclerView(ArrayList<ExpandedViewsWrapperData> expandedViewsWrapperData) {
         super();
-        this.expandedViewWrapper.addAll(expandedViewsWrapper);
+        this.expandedViewWrapper.addAll(expandedViewsWrapperData);
     }
 
     @NonNull
@@ -60,17 +56,14 @@ public class NumberInfoWrapperRecyclerView extends RecyclerView.Adapter<NumberIn
 
     @Override
     public void onBindViewHolder(@NonNull final NumberInfoWrapperRecyclerViewHolder numberInfoWrapperRecyclerViewHolder, int i) {
-        ExpandedViewsWrapper item = expandedViewWrapper.get(i);
+        final ExpandedViewsWrapperData item = expandedViewWrapper.get(i);
         numberInfoWrapperRecyclerViewHolder.infoBlockHeader.setText(item.Header);
         numberInfoWrapperRecyclerViewHolder.infoBlockDescription.setText(item.Description);
-        int visibility = ExpandedViewsMap[i] ? View.VISIBLE : View.GONE;
-        numberInfoWrapperRecyclerViewHolder.infoBlockInfoItemWrapper.setVisibility(visibility);
-        numberInfoWrapperRecyclerViewHolder.infoBlockDescription.setVisibility(visibility);
-        ExpandedViewWrapper expandedRecyclerView = new ExpandedViewWrapper(ExpandedViewsMap[i],i,numberInfoWrapperRecyclerViewHolder.infoBlockWrapper, numberInfoWrapperRecyclerViewHolder.infoBlockContentWrapper,
+        ExpandedViewWrapper expandedRecyclerView = new ExpandedViewWrapper(item.Expanded,i,numberInfoWrapperRecyclerViewHolder.infoBlockWrapper, numberInfoWrapperRecyclerViewHolder.infoBlockContentWrapper,
                 numberInfoWrapperRecyclerViewHolder.infoBlockHeader, numberInfoWrapperRecyclerViewHolder.imageIndicator, numberInfoWrapperRecyclerViewHolder.infoBlockInfoItemWrapper, item.data, numberInfoWrapperRecyclerViewHolder.context, new ExpandedViewWrapper.WrapperChanged() {
             @Override
             public void OnWrapperChanged(int position, boolean isViewExpanded) {
-                ExpandedViewsMap[position] = isViewExpanded;
+                item.Expanded = isViewExpanded;
                 notifyItemChanged(numberInfoWrapperRecyclerViewHolder.getAdapterPosition());
             }
         });

@@ -46,6 +46,12 @@ public class ExpandedViewWrapper {
         this.wrapperChanged = wrapperChanged;
         this.context = context;
 
+        if(isViewExpanded){
+            ExpandView(false);
+        }else{
+            HideView(false);
+        }
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         this.contentWrapperRecyclerView.setLayoutManager(layoutManager);
 
@@ -53,9 +59,9 @@ public class ExpandedViewWrapper {
             @Override
             public void onItemClick() {
                 if (getViewExpanded()){
-                    HideView();
+                    HideView(true);
                 }else{
-                    ExpandView();
+                    ExpandView(true);
                 }
             }
         };
@@ -106,7 +112,7 @@ public class ExpandedViewWrapper {
         });
     }
 
-    public void HideView(){
+    public void HideView(Boolean sendCallback){
         if(contentWrapper instanceof LinearLayout){
             setViewExpanded(false);
             int children = ((LinearLayout) contentWrapper).getChildCount();
@@ -115,11 +121,13 @@ public class ExpandedViewWrapper {
                 childView.setVisibility(View.GONE);
             }
             indicatorImageView.setImageResource(android.R.drawable.arrow_down_float);
-            wrapperChanged.OnWrapperChanged(position, getViewExpanded());
+            if (sendCallback) {
+                wrapperChanged.OnWrapperChanged(position, getViewExpanded());
+            }
         }
     }
 
-    public void ExpandView(){
+    public void ExpandView(Boolean sendCallBack){
         if(contentWrapper instanceof LinearLayout){
             setViewExpanded(true);
             int children = ((LinearLayout) contentWrapper).getChildCount();
@@ -128,7 +136,9 @@ public class ExpandedViewWrapper {
                 childView.setVisibility(View.VISIBLE);
             }
             indicatorImageView.setImageResource(android.R.drawable.arrow_up_float);
-            wrapperChanged.OnWrapperChanged(position, getViewExpanded());
+            if (sendCallBack) {
+                wrapperChanged.OnWrapperChanged(position, getViewExpanded());
+            }
         }
     }
 }

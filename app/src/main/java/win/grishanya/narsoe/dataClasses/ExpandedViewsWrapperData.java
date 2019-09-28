@@ -2,9 +2,9 @@ package win.grishanya.narsoe.dataClasses;
 
 import java.util.ArrayList;
 
-public class ExpandedViewsWrapper {
+public class ExpandedViewsWrapperData {
     public String Header;
     public String Description;
-    public Boolean Expand = false;
+    public Boolean Expanded = false;
     public ArrayList<ExpandedRecyclerViewData> data;
 }
