@@ -141,6 +141,7 @@ public class ResponseDataHandler {
                 ExpandedViewsWrapper expandedViewsWrapperGeneral = new ExpandedViewsWrapper();
                 expandedViewsWrapperGeneral.Header = resources.getString(R.string.number_info_activity_general);
                 expandedViewsWrapperGeneral.Description = resources.getString(R.string.number_info_activity_general_info_description);
+                expandedViewsWrapperGeneral.Expand = true;
                 ArrayList<ExpandedRecyclerViewData> infoGeneral = new ArrayList<>();
 
                 addDataToArrayList(infoGeneral,response.body().getName(),resources.getString(R.string.responseHandler_name));
@@ -159,17 +160,32 @@ public class ResponseDataHandler {
 
                 expandedViewsWrapperGeneral.data = infoGeneral;
                 result.add(expandedViewsWrapperGeneral);
-                result.add(expandedViewsWrapperGeneral);
-//
-//                if(response.body().getExtra() != null) {
-//                    if(response.body().getExtra().getAvito() != null) {
-//                        result = addStringIfNotEmpty(result, response.body().getExtra().getAvito().getName(), resources.getString(R.string.responseHandler_avito_name), true);
-//                        result = addStringIfNotEmpty(result, response.body().getExtra().getAvito().getAddress(), resources.getString(R.string.responseHandler_avito_adress), true);
-//                    }
-//                }
-//                if(!response.body().getComments().isEmpty()){
-//                    result = addStringIfNotEmpty(result,response.body().getComments(),resources.getString(R.string.responseHandler_comment),false);
-//                }
+
+                ExpandedViewsWrapper expandedViewsWrapperExtra = new ExpandedViewsWrapper();
+                expandedViewsWrapperExtra.Header = resources.getString(R.string.number_info_activity_extra);
+                expandedViewsWrapperExtra.Description = resources.getString(R.string.number_info_activity_extra_info_description);
+                ArrayList<ExpandedRecyclerViewData> infoExtra = new ArrayList<>();
+
+                if(response.body().getExtra() != null) {
+                    if(response.body().getExtra().getAvito() != null) {
+                        addDataToArrayList(infoExtra, response.body().getExtra().getAvito().getName(), resources.getString(R.string.responseHandler_avito_name));
+                        addDataToArrayList(infoExtra, response.body().getExtra().getAvito().getAddress(), resources.getString(R.string.responseHandler_avito_adress));
+                    }
+                    expandedViewsWrapperExtra.data = infoExtra;
+                    result.add(expandedViewsWrapperExtra);
+                }
+
+                ExpandedViewsWrapper expandedViewsWrapperComments = new ExpandedViewsWrapper();
+                expandedViewsWrapperComments.Header = resources.getString(R.string.number_info_activity_comments);
+                expandedViewsWrapperComments.Description = resources.getString(R.string.number_info_activity_comments_info_description);
+                ArrayList<ExpandedRecyclerViewData> infoComments = new ArrayList<>();
+
+                if(!response.body().getComments().isEmpty()){
+                    addDataToArrayList(infoComments,response.body().getComments(),resources.getString(R.string.responseHandler_comment));
+                    expandedViewsWrapperComments.data = infoComments;
+                    result.add(expandedViewsWrapperComments);
+                }
+
                 numberInfoCallbacks.onGetNumberInfo(result);
             }
 

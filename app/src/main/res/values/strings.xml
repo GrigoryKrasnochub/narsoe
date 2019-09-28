@@ -40,4 +40,8 @@
     <string name="responseHandler_type">Type</string>
     <string name="responseHandler_comment">Comment</string>
     <string name="number_info_activity_general_info_description">Briefly share with you information</string>
+    <string name="number_info_activity_extra">Extra</string>
+    <string name="number_info_activity_comments">Comments</string>
+    <string name="number_info_activity_extra_info_description">From different sources</string>
+    <string name="number_info_activity_comments_info_description">Somebodey once told me...</string>
 </resources>

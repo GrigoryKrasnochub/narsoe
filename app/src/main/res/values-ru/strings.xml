@@ -39,4 +39,8 @@
     <string name="setting_activity_server_version_request_error">СЕРВЕР НЕДОСТУПЕН</string>
     <string name="number_info_activity_general">Общие</string>
     <string name="number_info_activity_general_info_description">Коротко и по делу</string>
+    <string name="number_info_activity_extra">Дополнительно</string>
+    <string name="number_info_activity_comments">Комментарии</string>
+    <string name="number_info_activity_extra_info_description">Из разных источников</string>
+    <string name="number_info_activity_comments_info_description">Кто-то однажды сказал</string>
 </resources>

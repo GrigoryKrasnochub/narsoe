@@ -79,21 +79,6 @@ public class NumberInfoActivity extends AppCompatActivity {
                 ShowNumberInfo(phoneNumber);
             }
         });
-//                new ResponseDataHandler.NumberInfoCallbacks() {
-//            @Override
-//            public void onGetNumberInfo(String result) {
-//                informationTextView.setText(result);
-//                downloadProgressBar.setVisibility(View.INVISIBLE);
-//                informationTextView.setVisibility(View.VISIBLE);
-//            }
-//
-//            @Override
-//            public void onGetNumberInfoFailed(Throwable error) {
-//                informationTextView.setText(R.string.bad_request);
-//                informationTextView.setVisibility(View.VISIBLE);
-//                ShowNumberInfo(phoneNumber);
-//            }
-//        });
     }
 }
 
