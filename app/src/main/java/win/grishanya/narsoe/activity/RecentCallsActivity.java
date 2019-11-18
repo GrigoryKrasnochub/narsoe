@@ -35,6 +35,7 @@ import win.grishanya.narsoe.R;
 import win.grishanya.narsoe.RecentCallsRecycleViewAdapter;
 import win.grishanya.narsoe.language.LanguageController;
 import win.grishanya.narsoe.network.PhoneNumberHandler;
+import win.grishanya.narsoe.widgets.AlertWindows;
 
 public class RecentCallsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private BottomNavigationView navigation;
@@ -218,6 +219,9 @@ public class RecentCallsActivity extends AppCompatActivity implements SharedPref
             case R.id.settings_settings:
                 Intent intent = new Intent(RecentCallsActivity.this, SettingsActivity.class);
                 startActivity(intent);
+                return true;
+            case R.id.settings_about:
+                AlertWindows.showAboutProgramAlertWindow(this);
                 return true;
         }
         return super.onOptionsItemSelected(item);

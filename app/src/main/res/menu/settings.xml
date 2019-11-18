@@ -5,4 +5,7 @@
         android:id="@+id/settings_settings"
         android:icon="@android:drawable/ic_menu_manage"
         android:title="@string/title_settings" />
+    <item
+        android:id="@+id/settings_about"
+        android:title="@string/title_about" />
 </menu>

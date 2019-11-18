@@ -22,6 +22,7 @@ import ru.tinkoff.decoro.watchers.MaskFormatWatcher;
 import win.grishanya.narsoe.R;
 import win.grishanya.narsoe.language.LanguageController;
 import win.grishanya.narsoe.permissions.PermissionChecer;
+import win.grishanya.narsoe.widgets.AlertWindows;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -65,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             case R.id.settings_settings:
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
+                return true;
+            case R.id.settings_about:
+                AlertWindows.showAboutProgramAlertWindow(this);
                 return true;
         }
         return super.onOptionsItemSelected(item);
