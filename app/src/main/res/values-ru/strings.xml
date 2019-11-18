@@ -37,4 +37,14 @@
     <string name="setting_activity_domain_info_header">URL домена</string>
     <string name="setting_activity_server_version">Версия сервера</string>
     <string name="setting_activity_server_version_request_error">СЕРВЕР НЕДОСТУПЕН</string>
+    <string name="number_info_activity_general">Общие</string>
+    <string name="number_info_activity_general_info_description">Коротко и по делу</string>
+    <string name="number_info_activity_extra">Дополнительно</string>
+    <string name="number_info_activity_comments">Комментарии</string>
+    <string name="number_info_activity_extra_info_description">Из разных источников</string>
+    <string name="number_info_activity_comments_info_description">Кто-то однажды сказал</string>
+    <string name="title_about">О программе</string>
+    <string name="about_version_title">Версия</string>
+    <string name="about_GIT">GitHub</string>
+    <string name="about_close_button">Закрыть</string>
 </resources>

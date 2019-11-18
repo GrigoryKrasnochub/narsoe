@@ -12,6 +12,7 @@
     <string name="info_caller_phone">Phone number</string>
     <string name="info_block_info_header">Some information</string>
     <string name="bad_request">Oooh… Something went wrong</string>
+    <string name="number_info_activity_general">General</string>
     <string name="call_info_number_example" translatable="false">555–555–555</string>
     <string name="call_info_info_example">Name SomeName \nRating SomeNumber \nType SomeType</string>
     <string name="setting_modal_window_position">Modal window position</string>
@@ -38,4 +39,14 @@
     <string name="responseHandler_avito_adress">Avito address</string>
     <string name="responseHandler_type">Type</string>
     <string name="responseHandler_comment">Comment</string>
+    <string name="number_info_activity_general_info_description">Briefly share with you information</string>
+    <string name="number_info_activity_extra">Extra</string>
+    <string name="number_info_activity_comments">Comments</string>
+    <string name="number_info_activity_extra_info_description">From different sources</string>
+    <string name="number_info_activity_comments_info_description">Somebody once told me...</string>
+    <string name="title_about">About</string>
+    <string name="about_version_title">Version</string>
+    <string name="about_GIT">GIT URL</string>
+    <string name="about_close_button">Close</string>
+    <string name="about_GIT_URL" translatable="false">https://github.com/GrigoryKrasnochub</string>
 </resources>

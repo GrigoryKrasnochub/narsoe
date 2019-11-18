@@ -6,19 +6,25 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.text.method.ScrollingMovementMethod;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
+import win.grishanya.narsoe.NumberInfoWrapperRecyclerView;
 import win.grishanya.narsoe.R;
 import win.grishanya.narsoe.ResponseDataHandler;
+import win.grishanya.narsoe.dataClasses.ExpandedViewsWrapperData;
 import win.grishanya.narsoe.network.PhoneNumberHandler;
 
 public class NumberInfoActivity extends AppCompatActivity {
 
     TextView phoneNumberTextView;
     TextView informationTextView;
+    RecyclerView infoTextWrapperRecyclerView;
     ProgressBar downloadProgressBar;
     private SharedPreferences myPreferences;
     String phoneNumber;
@@ -32,28 +38,35 @@ public class NumberInfoActivity extends AppCompatActivity {
 
         phoneNumberTextView = (TextView) findViewById(R.id.numberInfoPhoneNumberTextView);
         informationTextView = (TextView) findViewById(R.id.numberInfoFullINformationTextView);
+        infoTextWrapperRecyclerView = (RecyclerView) findViewById(R.id.numberInfoActivityInformationWrapperRecyclerView);
         downloadProgressBar = (ProgressBar) findViewById(R.id.numberInfoProgressBar);
 
-        informationTextView.setMovementMethod(new ScrollingMovementMethod());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        infoTextWrapperRecyclerView.setLayoutManager(layoutManager);
 
         myPreferences =  PreferenceManager.getDefaultSharedPreferences(this);
+
 
         Intent intent = getIntent();
         phoneNumber = phoneNumberHandler.prettifyPhoneNumber(intent.getStringExtra("phoneNumber"));
         phoneNumberTextView.setText(phoneNumber);
         ShowNumberInfo(phoneNumber);
+
     }
+
+
 
     protected void ShowNumberInfo(final String phoneNumber){
         ResponseDataHandler responseDataHandler = new ResponseDataHandler(myPreferences.getString("domainURL","https://narsoe.ga/"));
-        responseDataHandler.getFullNumberInfo(phoneNumber, getResources(),new ResponseDataHandler.NumberInfoCallbacks() {
+        responseDataHandler.getFullNumberInfoInExpandedViewsWrapper(phoneNumber, getResources(), new ResponseDataHandler.NumberInfoFullInExpandedViewsWrapperCallbacks() {
             @Override
-            public void onGetNumberInfo(String result) {
-                informationTextView.setText(result);
-                downloadProgressBar.setVisibility(View.INVISIBLE);
-                informationTextView.setVisibility(View.VISIBLE);
+            public void onGetNumberInfo(ArrayList<ExpandedViewsWrapperData> result) {
+                NumberInfoWrapperRecyclerView numberInfoWrapperRecyclerView = new NumberInfoWrapperRecyclerView(result);
+                infoTextWrapperRecyclerView.setAdapter(numberInfoWrapperRecyclerView);
+                downloadProgressBar.setVisibility(View.GONE);
+                informationTextView.setVisibility(View.GONE);
             }
-
             @Override
             public void onGetNumberInfoFailed(Throwable error) {
                 informationTextView.setText(R.string.bad_request);
